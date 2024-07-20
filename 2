@@ -1,0 +1,45 @@
+#include <stdlib.h>
+
+typedef struct node {
+	struct node * next;
+	void * cargo;	
+} node; 
+
+typedef struct list {
+	node * head;
+	int length;
+	void * (* cargo_delete)(void *); 
+	//plenty of room to add more functions here if there is an interest.
+} list;
+
+static node * create_node() {
+	node * new_node = malloc(sizeof(node));
+	new_node -> next = NULL;
+	new_node ->cargo = NULL;
+	return new_node;
+}
+
+static void delete_node_data(list * list, node * node) {
+	if (list -> cargo_delete) {
+		list ->cargo_delete(node ->cargo);
+	}
+}
+
+list * create_list(void * (* cargo_delete) (void *)) {
+	list * new_list = malloc(sizeof(list));
+	new_list -> head = NULL;
+	new_list -> length = 0;
+	new_list -> cargo_delete = cargo_delete;
+	return new_list;
+}
+
+int list_insert(list * list, void * data) {
+	node * new_node = create_node();
+		
+
+}
+ 
+int main() {
+
+}
+

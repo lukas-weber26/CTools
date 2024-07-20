@@ -1,0 +1,147 @@
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+
+typedef struct node {
+	struct node * next;
+	void * cargo;	
+} node; 
+
+typedef struct list {
+	node * head;
+	int length;
+	int cargo_size; // this may prove to be unnecessary 
+	void (* cargo_delete)(void *); 
+	void (* print)(void *); 
+	//plenty of room to add more functions here if there is an interest.
+} list;
+
+static node * create_node() {
+	node * new_node = malloc(sizeof(node));
+	new_node -> next = NULL;
+	new_node ->cargo = NULL;
+	return new_node;
+}
+
+static void delete_data(list * list, void * cargo) {
+	if (list -> cargo_delete) {
+		list ->cargo_delete(cargo);
+	} else {
+		free(cargo);
+	}
+}
+
+static void delete_node_data(list * list, node * node) {
+	delete_data(list, node -> cargo);
+	node ->cargo= NULL;
+}
+
+static node * get_tail(list * list) {
+	if (list->head) {
+		node * temp = list->head;
+		while (temp -> next) {
+			temp = temp -> next;
+		}
+		return temp;
+	} else{
+		return NULL;
+	}
+}
+
+void * list_get_tail(list * list) {
+	node * tail = get_tail(list);
+	if (tail) {
+		return  tail -> cargo;
+	} 
+	return NULL;
+} 
+
+list * create_list(int data_size, void (* cargo_delete) (void *)) {
+	list * new_list = malloc(sizeof(list));
+	new_list -> head = NULL;
+	new_list -> length = 0;
+	new_list -> cargo_delete = cargo_delete;
+	new_list ->cargo_size = data_size;
+	return new_list;
+}
+
+int list_insert(list * list, void * data) {
+	node * new_node = create_node();
+	node * tail;
+	new_node ->cargo = data;
+	if ((tail = get_tail(list)) != NULL) {
+		tail ->	next = new_node;
+	} else {
+		list ->head = new_node;	
+	}
+	
+	list ->length ++;
+	return list -> length;
+}
+
+int list_insert_head(list * list, void * data) {
+	node * new_node = create_node();
+	new_node -> cargo = data;
+	new_node ->next = list ->head;
+	list -> head = new_node;
+	list->length ++;
+	return 0;
+}
+
+int list_insert_index(int index, list * list, void * data) {
+	if (index <= list ->length && index >= 0) {
+		if (index == 0) {
+			return list_insert_head(list, data);
+		} else if (index == list ->length) {
+			return list_insert(list, data);
+		} else {
+			node * temp = list ->head;
+			int i = 0;
+			while (i < index - 1) {
+				temp = temp->next;
+				i++;
+			}
+
+			node * new_node = create_node();
+			new_node -> cargo = data;
+			new_node ->next = temp ->next;
+			temp ->next = new_node;
+			list->length++;
+			return index;
+		}
+	}
+
+	return  -1;
+}
+
+void print_list(list * list) {
+	node * temp = list->head;
+	while (temp) {
+		list->print(temp);
+		temp = temp -> next;
+	}
+}
+
+int list_length(list * list) {
+	return list ->length;
+}
+
+void list_delete_head() {}
+void list_delete_tail() {}
+void list_delete_index () {}
+
+void list_replace_head() {}
+void list_replace_tail() {}
+void list_replace_index () {}
+
+//user declares an index variable and passes a pointer. This function increments it and passes next node.
+//poit: user declares themselves a bit of state but does not need to manage it. 
+void * list_step (list * list, int * index) {
+	
+	*index = *index +1;	
+};
+ 
+int main() {
+
+}
+
