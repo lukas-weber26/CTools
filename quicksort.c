@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,7 +14,8 @@ static void swap(void * array, int lower, int upper, int item_size) {
 }
 
 static void quick_sort(void * array, int upper, int lower, int item_size, int (*compare) (void *, void *)) {
-	if (upper - lower < 2) {
+	assert(upper >= lower);
+	if (upper - lower == 0 ) {
 		return;
 	}
 
@@ -49,11 +51,18 @@ static void quick_sort(void * array, int upper, int lower, int item_size, int (*
 	swap(array, left_index, pivot, item_size);
 
 	//using 2 here may be slightly bad
-	if (left_index - lower > 2) {
-		quick_sort(array, left_index -1 , lower, item_size, compare);
+	//printf("Fixed:\n");
+	//for (int i = lower; i <= upper; i ++) {
+	//	printf("%d,", *((int *)(((char *) array) + item_size*i))) ;
+	//}
+	//printf("\n");
+	//printf("New ranges:%d,%d, %d, %d\n", left_index-1, lower, upper, left_index+1);
+
+	if (lower < left_index - 1) {
+		quick_sort(array, left_index-1, lower, item_size, compare);
 	}
-	if (upper- left_index> 2) {
-		quick_sort(array, upper, left_index + 1, item_size, compare);
+	if (left_index +1 < upper) {
+		quick_sort(array, upper, left_index+1, item_size, compare);
 	}
 
 }
@@ -69,12 +78,24 @@ int gte(void * a, void* b) {
 }
 
 int main() {
-	int sortable [10] = {5, 1, 6 ,2 ,7};
+	int count = 1000000;
+	int sortable [count] = {};
 
-	sort(sortable, 5, sizeof(int), &gte);
-	
-	for (int i = 0; i < 5; i ++) {
+	for (int i = 0; i < count; i ++) {
+		sortable[i] = rand()%count;
+	}
+
+	sort(sortable, count, sizeof(int), &gte);
+	int temp = -1;
+
+	for (int i = 0; i < count; i ++) {
 		printf("%d: %d\n",i,sortable[i]);
+		if (sortable[i] < temp) {
+			printf("Error\n");
+			exit(0);
+		} else {
+			temp = sortable[i];
+		}
 	}
 }
 
