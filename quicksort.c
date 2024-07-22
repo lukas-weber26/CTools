@@ -22,7 +22,7 @@ static void quick_sort(void * array, int upper, int lower, int item_size, int (*
 	int initial_pivot = (lower + upper)/2;
 	int pivot = upper;
 
-	swap(array, lower, upper, item_size);
+	swap(array, initial_pivot, pivot, item_size);
 
 	//forgot if this is supposed to be greater equals or just equals
 	while (right_index >= left_index) {
@@ -42,7 +42,7 @@ static void quick_sort(void * array, int upper, int lower, int item_size, int (*
 		}
 
 		if (!move_left && !move_right) {
-			swap(array, lower, upper, item_size);
+			swap(array, left_index, right_index, item_size);
 		}
 	}
 
@@ -69,11 +69,11 @@ int gte(void * a, void* b) {
 }
 
 int main() {
-	int sortable [10] = {5, 1, 6 ,2 ,7, 1, 5, 2 , 5, 10};
+	int sortable [10] = {5, 1, 6 ,2 ,7};
 
-	sort(sortable, 10, sizeof(int), &gte);
+	sort(sortable, 5, sizeof(int), &gte);
 	
-	for (int i = 0; i < 10; i ++) {
+	for (int i = 0; i < 5; i ++) {
 		printf("%d: %d\n",i,sortable[i]);
 	}
 }
