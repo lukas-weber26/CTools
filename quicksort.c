@@ -77,7 +77,7 @@ int gte(void * a, void* b) {
 	return (*A) >= (*B);
 }
 
-int main() {
+static void test_sort() {
 	int count = 1000000;
 	int sortable [count] = {};
 
@@ -97,5 +97,45 @@ int main() {
 			temp = sortable[i];
 		}
 	}
+}
+
+int string_gte(void * a, void * b) {
+	char * A = a;
+	char * B = b;
+	
+	while (*A != '\0' && *B != '\0') {
+				
+		if (*A > *B) {
+			return 1;
+		}
+
+		if (*A < *B) {
+			return 0;
+		}
+
+		A += 1;
+		B += 1;
+	}
+
+	return (*A >= *B);
+}
+
+void print_strings(char * strings[], int length) {
+	for (int i = 0; i < length; i ++) {
+		printf("%s\n", strings[i]);
+	}
+}
+
+int main() {
+	char * sortable_string[5]; 
+	sortable_string[0] = "Alpha";
+	sortable_string[1] = "Eta";
+	sortable_string[2] = "Gamma";
+	sortable_string[3] = "Beta";
+	sortable_string[4] = "Delta";
+
+	print_strings(sortable_string, 5);
+	sort(sortable_string, 5, sizeof(char *), &string_gte);
+	print_strings(sortable_string, 5);
 }
 
